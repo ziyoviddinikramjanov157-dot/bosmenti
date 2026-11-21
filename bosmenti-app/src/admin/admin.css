@@ -134,3 +134,111 @@ input:focus, select:focus, textarea:focus { outline: 0; border-color: var(--ink)
   .a-head .a-search { max-width: none }
   .a-user a { display: none }
 }
+
+/* shared bits for the till, stock and report screens */
+.a-sub { font-size: 17px; margin: 28px 0 12px }
+.a-sub small { font-size: 13px; font-weight: 500 }
+.a-check { display: flex; align-items: center; gap: 8px; font-size: 14px; white-space: nowrap }
+.a-filter select { border: 1px solid var(--line); background: var(--card); border-radius: 99px; padding: 7px 12px; font-size: 13.5px; font-weight: 600 }
+.a-filter b.hot { margin-left: 6px }
+.a-tag { display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 99px; background: var(--bg) }
+.a-tag.store { background: rgba(196, 154, 82, .2); color: #6b4f17 }
+.a-tag.online { background: rgba(30, 70, 54, .12); color: var(--green) }
+.a-pay { display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 9px; border-radius: 99px }
+.a-pay.paid { background: rgba(47, 125, 87, .12); color: var(--ok) }
+.a-pay.partial { background: rgba(196, 154, 82, .22); color: #7a5a1e }
+.a-pay.unpaid { background: rgba(184, 67, 47, .1); color: var(--sale) }
+.a-late { color: var(--sale) !important; font-weight: 700 }
+.a-pays { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-variant-numeric: tabular-nums }
+.a-pays li { display: grid; grid-template-columns: max-content 1fr max-content; gap: 12px; padding: 8px 10px; border-radius: 10px; background: var(--bg) }
+.a-addpay { display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--line); border-radius: 14px; padding: 14px }
+.a-addpay label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--mut) }
+.a-addpay input, .a-addpay select { height: 44px; border: 1px solid var(--line); border-radius: 12px; padding: 0 12px; font-size: 15px; background: #fff }
+.a-picklist { display: flex; flex-direction: column; max-height: 260px; overflow-y: auto; border: 1px solid var(--line); border-radius: 12px }
+.a-picklist button { text-align: left; border: 0; border-bottom: 1px solid var(--line); background: #fff; padding: 11px 12px; font-size: 14.5px; min-height: 44px }
+.a-picklist button:last-child { border-bottom: 0 }
+.a-picklist button.on { background: var(--ink); color: #fff }
+.a-chips { display: flex; flex-wrap: wrap; gap: 8px }
+.a-chips button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; min-width: 52px; justify-content: center; padding: 0 14px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-weight: 600 }
+.a-chips button.on { border-color: var(--ink); box-shadow: 0 0 0 2px var(--ink) }
+.a-chips i, .o-grid th i { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0, 0, 0, .15); display: inline-block }
+
+/* Kassa: large targets for a touch screen */
+.a-shell.is-kassa .a-main { max-width: none }
+.k-wrap { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(320px, 1fr); gap: 20px; align-items: start }
+.k-main { display: flex; flex-direction: column; gap: 12px; min-width: 0 }
+.k-scan { display: flex; gap: 10px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 10px 10px 10px 16px }
+.k-scan input { flex: 1; min-width: 0; height: 48px; border: 0; font-size: 17px; outline: 0; background: none }
+.k-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 4px rgba(47, 125, 87, .18); flex: none }
+.k-msg { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 14px; border-radius: 12px; background: rgba(47, 125, 87, .1); color: var(--ok); font-weight: 600; font-size: 14.5px }
+.k-msg.bad { background: rgba(184, 67, 47, .1); color: var(--sale) }
+.k-lines { list-style: none; margin: 0; padding: 0; background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden }
+.k-lines li { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto auto; align-items: center; gap: 14px; padding: 12px 14px; border-bottom: 1px solid var(--line) }
+.k-lines li:last-child { border-bottom: 0 }
+.k-lines img, .k-lines .a-noimg { width: 52px; height: 62px; border-radius: 10px; object-fit: cover }
+.k-li { display: flex; flex-direction: column; gap: 2px; min-width: 0 }
+.k-li b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.k-li s { color: var(--mut) }
+.k-qty { display: flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 12px }
+.k-qty button { width: 44px; height: 44px; border: 0; background: none; font-size: 20px }
+.k-qty b { min-width: 24px; text-align: center; font-variant-numeric: tabular-nums }
+.k-sum { min-width: 110px; text-align: right; font-variant-numeric: tabular-nums }
+.k-empty, .k-done { background: var(--card); border: 1px dashed var(--line); border-radius: 16px; padding: 40px 24px; text-align: center; display: flex; flex-direction: column; gap: 8px; align-items: center }
+.k-empty b, .k-done h2 { font-size: 20px }
+.k-empty p { color: var(--mut); max-width: 420px }
+.k-done { border-style: solid; border-color: rgba(47, 125, 87, .4) }
+.k-side { position: sticky; top: 76px; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px }
+.k-total { display: flex; flex-direction: column; gap: 2px }
+.k-total span { color: var(--mut); font-size: 13px; font-weight: 600 }
+.k-total b { font-size: 34px; font-variant-numeric: tabular-nums; letter-spacing: -.01em }
+.k-quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px }
+.k-quick .a-btn { min-height: 48px; padding: 0 8px }
+.k-pay label, .k-cust label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 600; color: var(--mut) }
+.k-pay input, .k-cust input { height: 50px; border: 1px solid var(--line); border-radius: 12px; padding: 0 12px; font-size: 18px; background: #fff; width: 100%; font-variant-numeric: tabular-nums }
+.k-calc { font-size: 15px }
+.k-calc dd { text-align: right; font-variant-numeric: tabular-nums }
+.k-debt { color: var(--sale); font-weight: 700 }
+.k-cust { border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px 12px; margin: 0; display: flex; flex-direction: column; gap: 8px }
+.k-cust legend { font-size: 13px; font-weight: 600; color: var(--mut); padding: 0 6px }
+.k-cust input { font-size: 16px }
+.k-phone { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 12px; padding-left: 12px; background: #fff }
+.k-phone span { color: var(--mut) }
+.k-phone input { border: 0; padding-left: 0 }
+.k-sell { min-height: 60px; font-size: 18px; border-radius: 14px }
+.k-auto { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--mut) }
+.k-clear { align-self: center; font-size: 13.5px; color: var(--sale) }
+.k-intake { display: flex; flex-direction: column; gap: 14px; margin-bottom: 8px; max-width: none }
+.k-num { width: 90px; height: 40px; border: 1px solid var(--line); border-radius: 10px; padding: 0 10px; text-align: right; font-size: 15px }
+
+/* Ombor */
+.o-list { display: flex; flex-direction: column; gap: 14px }
+.o-item { max-width: none; padding: 16px; display: flex; flex-direction: column; gap: 12px }
+.o-item.is-off { opacity: .7 }
+.o-item header { display: flex; align-items: center; gap: 12px }
+.o-item header img, .o-item header .a-noimg { width: 44px; height: 54px; border-radius: 8px; object-fit: cover }
+.o-item header div { flex: 1; min-width: 0; display: flex; flex-direction: column }
+.o-grid { border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums }
+.o-grid th { font-size: 12px; color: var(--mut); font-weight: 600; padding: 4px 6px; text-align: center }
+.o-grid tbody th { text-align: left; white-space: nowrap; display: flex; align-items: center; gap: 6px; color: var(--ink); font-size: 13.5px; min-height: 44px }
+.o-grid td { padding: 3px }
+.o-grid td button { width: 52px; height: 40px; border: 1px solid var(--line); border-radius: 10px; background: #fff; font-weight: 700 }
+.o-grid td button.zero { color: #a8adb2; font-weight: 500 }
+.o-grid td button.low { background: rgba(196, 154, 82, .18); border-color: rgba(196, 154, 82, .5) }
+.o-grid td button.neg { background: rgba(184, 67, 47, .1); color: var(--sale); border-color: rgba(184, 67, 47, .4) }
+
+/* Hisobot */
+.r-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px }
+.r-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 4px }
+.r-card span { font-size: 13px; color: var(--mut); font-weight: 600 }
+.r-card b { font-size: 22px; font-variant-numeric: tabular-nums }
+.r-card.big { background: var(--ink); color: #fff; border-color: var(--ink) }
+.r-card.big span, .r-card.big small { color: #c9ccc5 }
+.r-dates { display: inline-flex; align-items: center; gap: 6px }
+.r-dates input { height: 36px; border: 1px solid var(--line); border-radius: 10px; padding: 0 8px }
+
+@media (max-width: 900px) {
+  .k-wrap { grid-template-columns: 1fr }
+  .k-side { position: static }
+  .k-lines li { grid-template-columns: 44px minmax(0, 1fr) auto; }
+  .k-sum { grid-column: 2 / -1; text-align: left }
+}

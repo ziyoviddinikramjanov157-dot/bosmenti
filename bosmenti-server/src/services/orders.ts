@@ -37,8 +37,7 @@ export const OrderInput = z
   })
 export type OrderInput = z.infer<typeof OrderInput>
 
-export type PayState = 'paid' | 'partial' | 'unpaid'
-export const payState = (total: number, paid: number): PayState => (paid >= total ? 'paid' : paid > 0 ? 'partial' : 'unpaid')
+import { payState, type PayState } from '../pos-rules.js'
 
 export interface OrderItem { productId: string; name: string; color: string; size: string; price: number; basePrice: number; qty: number; image: string | null }
 export interface Payment { id: number; amount: number; method: 'cash' | 'card'; note: string; createdAt: string }

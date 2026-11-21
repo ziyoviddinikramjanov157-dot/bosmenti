@@ -55,6 +55,22 @@ Zaxira nusxani muntazam (masalan, har kuni) olib, serverdan tashqarida saqlang.
 
 Telegram sozlanmagan bo‘lsa ham buyurtmalar admin panelda ko‘rinadi.
 
+## Kassa (POS apparat)
+
+Admin panelni POS apparatdagi brauzerda oching: `https://DOMEN/admin`. Birinchi bo‘lim — **Kassa**.
+
+- **Skanerlar** (qo‘l skaneri va yumaloq stol skaneri) USB orqali ulanadi va klaviaturadek ishlaydi, alohida dastur kerak emas. Kassa yoki Kirim sahifasi ochiq turganda istalgan paytda skanerlash mumkin.
+- **Shtrix-kodlar.** Do‘kon o‘zi chiqaradigan yorliqlarda EAN-13 kod bo‘ladi (200 bilan boshlanadi), uni har qanday skaner o‘qiydi. Tovardagi tayyor kodlar ham ishlaydi: ular birinchi marta “Kirim”da kiyimga bog‘lanadi.
+- **Chek printeri.** Windows'da uni standart printer qiling. Chek so‘roqsiz chiqishi uchun Chrome'ni shunday ishga tushiring:
+
+  ```bash
+  "C:\Program Files\Google\Chrome\Application\chrome.exe" --kiosk-printing https://DOMEN/admin
+  ```
+
+  Qog‘oz eni (58 yoki 80 mm) admin paneldagi Sozlamalar → Kassa bo‘limida tanlanadi.
+- **Pul qutisi** odatda printerga ulanadi: printer drayveri sozlamalarida chek chiqqanda qutini ochish (cash drawer) funksiyasini yoqing.
+- **Fiskal chek.** Bu tizim do‘konning ichki hisobi. Soliq talab qiladigan rasmiy chekni POS'dagi davlat tasdiqlagan kassa dasturi chiqaradi.
+
 ## O‘z kompyuteringizda ishlatish
 
 Kerak: Node.js 22 va PostgreSQL 16.

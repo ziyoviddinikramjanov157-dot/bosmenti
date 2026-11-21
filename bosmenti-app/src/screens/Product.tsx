@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { byId, CN, SHOP, SIZES } from '../data/catalog'
+import { byId, CN, leftOf, SHOP, SIZES, soldOut } from '../data/catalog'
 import { useStore } from '../store'
 import { fmt, reducedMotion } from '../lib/util'
 import { asset } from '../lib/api'
@@ -20,6 +20,11 @@ export function Product() {
   if (!p) return null
 
   const col = p.colors[color] ?? p.colors[0]
+  const left = size ? leftOf(p, col.n, size) : Infinity
+  const pickColor = (i: number) => {
+    setColor(i)
+    if (size && leftOf(p, p.colors[i].n, size) <= 0) setSize(null)
+  }
   const pct = p.old ? Math.round((1 - p.price / p.old) * 100) : 0
   const photo = p.imgs.length > 0
   const smooth: ScrollBehavior = reducedMotion() ? 'auto' : 'smooth'
@@ -31,7 +36,8 @@ export function Product() {
       sizesRef.current?.scrollIntoView({ block: 'center', behavior: smooth })
       return
     }
-    dispatch({ type: 'add', line: { id: p.id, ci: color, size, qty } })
+    if (left <= 0) return toast('Bu o‘lcham tugagan')
+    dispatch({ type: 'add', line: { id: p.id, ci: color, size, qty: Math.min(qty, left) } })
     toast('Savatga qo‘shildi', 'Savatga o‘tish', () => tab('cart'))
   }
 
@@ -71,10 +77,11 @@ export function Product() {
         <span className="pcat">{CN[p.cat]} · {p.made}</span>
         <h1>{p.name}</h1>
         <div className="price"><b>{fmt(p.price)}</b>{p.old > 0 && <><s>{fmt(p.old)}</s><em>−{pct}%</em></>}</div>
+        {soldOut(p) && <p className="hint">Hozircha tugagan. Yangi kelishi bilan saytda paydo bo‘ladi.</p>}
 
         <div className="row"><h4>Rang: <span>{col.n}</span></h4></div>
         <div className="sw">
-          {p.colors.map((c, i) => <button key={c.n} className={i === color ? 'on' : ''} style={{ ['--c' as string]: c.c }} onClick={() => setColor(i)} aria-label={c.n} title={c.n} />)}
+          {p.colors.map((c, i) => <button key={c.n} className={i === color ? 'on' : ''} style={{ ['--c' as string]: c.c }} onClick={() => pickColor(i)} aria-label={c.n} title={c.n} />)}
         </div>
 
         <div className="row">
@@ -82,7 +89,10 @@ export function Product() {
           <button className="lnk" onClick={() => openSheet({ kind: 'guide' })}><Icon n="ruler" />O‘lcham jadvali</button>
         </div>
         <div className={'sizes' + (shake ? ' err' : '')} key={shake} id="sizes" ref={sizesRef}>
-          {SIZES[p.sz].map(z => <button key={z} className={size === z ? 'on' : ''} onClick={() => { setSize(z); setHint(false) }}>{z}</button>)}
+          {SIZES[p.sz].map(z => {
+            const out = leftOf(p, col.n, z) <= 0
+            return <button key={z} className={(size === z ? 'on' : '') + (out ? ' out' : '')} disabled={out} title={out ? 'Tugagan' : undefined} onClick={() => { setSize(z); setHint(false); setQty(q => Math.min(q, leftOf(p, col.n, z))) }}>{z}</button>
+          })}
         </div>
         <p className="hint" hidden={!hint}>Avval o‘lchamni tanlang</p>
 
@@ -94,7 +104,7 @@ export function Product() {
         <div className="qty">
           <button onClick={() => setQty(q => Math.max(1, q - 1))} aria-label="Kamaytirish"><Icon n="minus" /></button>
           <b>{qty}</b>
-          <button onClick={() => setQty(q => Math.min(10, q + 1))} aria-label="Ko‘paytirish"><Icon n="plus" /></button>
+          <button onClick={() => setQty(q => Math.min(10, left, q + 1))} aria-label="Ko‘paytirish"><Icon n="plus" /></button>
         </div>
         <button className="cta" id="addBtn" onClick={add}>Savatga qo‘shish <span>{fmt(p.price * qty)}</span></button>
       </div>

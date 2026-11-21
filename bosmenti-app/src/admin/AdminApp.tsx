@@ -1,12 +1,26 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { adminApi, LOGGED_OUT, send } from './api'
-import { Orders } from './Orders'
+import { Discounts } from './Discounts'
+import { Kassa } from './Kassa'
+import { Kirim } from './Kirim'
+import { Ombor } from './Ombor'
 import { Products } from './Products'
+import { Report } from './Report'
+import { Sales } from './Sales'
 import { SettingsPage } from './Settings'
 
-type Tab = 'orders' | 'products' | 'settings'
-const TABS: [Tab, string][] = [['orders', 'Buyurtmalar'], ['products', 'Mahsulotlar'], ['settings', 'Sozlamalar']]
-const fromHash = (): Tab => (TABS.some(([t]) => `#${t}` === location.hash) ? (location.hash.slice(1) as Tab) : 'orders')
+type Tab = 'kassa' | 'savdolar' | 'kirim' | 'ombor' | 'products' | 'chegirmalar' | 'hisobot' | 'settings'
+const TABS: [Tab, string][] = [
+  ['kassa', 'Kassa'],
+  ['savdolar', 'Savdolar'],
+  ['kirim', 'Kirim'],
+  ['ombor', 'Ombor'],
+  ['products', 'Mahsulotlar'],
+  ['chegirmalar', 'Chegirmalar'],
+  ['hisobot', 'Hisobot'],
+  ['settings', 'Sozlamalar'],
+]
+const fromHash = (): Tab => (TABS.some(([t]) => `#${t}` === location.hash) ? (location.hash.slice(1) as Tab) : 'kassa')
 
 export function AdminApp() {
   // undefined while checking whether the session is still valid
@@ -33,22 +47,27 @@ export function AdminApp() {
   }
 
   return (
-    <div className="a-shell">
+    <div className={'a-shell' + (tab === 'kassa' ? ' is-kassa' : '')}>
       <header className="a-top">
-        <div className="a-brand"><span className="a-mark">B</span>Bosmenti <small>boshqaruv</small></div>
+        <div className="a-brand"><span className="a-mark">B</span>Bosmenti</div>
         <nav className="a-tabs">
           {TABS.map(([t, label]) => (
             <button key={t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>{label}</button>
           ))}
         </nav>
         <div className="a-user">
-          <a href="./" target="_blank" rel="noopener">Do‘konni ochish</a>
+          <a href="./" target="_blank" rel="noopener">Do‘kon sayti</a>
           <button onClick={logout}>Chiqish</button>
         </div>
       </header>
       <main className="a-main">
-        {tab === 'orders' && <Orders />}
+        {tab === 'kassa' && <Kassa />}
+        {tab === 'savdolar' && <Sales />}
+        {tab === 'kirim' && <Kirim />}
+        {tab === 'ombor' && <Ombor />}
         {tab === 'products' && <Products />}
+        {tab === 'chegirmalar' && <Discounts />}
+        {tab === 'hisobot' && <Report />}
         {tab === 'settings' && <SettingsPage />}
       </main>
     </div>

@@ -26,8 +26,11 @@ export interface Product {
   acc?: string
   isNew: boolean
   tint: string
+  /** Pieces left per "colour|size"; only for products whose stock the shop tracks */
+  stock?: Record<string, number>
+  discount?: number
 }
-export interface Shop { phone: string; address: string; hours: string; shipFee: number; freeFrom: number }
+export interface Shop { phone: string; address: string; hours: string; shipFee: number; freeFrom: number; cardNumber: string; cardOwner: string }
 
 export const TINT = ['#E4E7E1', '#E9E3D8', '#DCE3E8', '#E7E0DE', '#E1E6DB', '#EAE6DE']
 
@@ -36,7 +39,7 @@ export let CN: Record<CatId, string> = {}
 export let PRODUCTS: Product[] = []
 export let SIZES = {} as Record<SizeKey, string[]>
 export let GUIDE = {} as Record<SizeKey, { h: string[]; r: string[][] }>
-export let SHOP: Shop = { phone: '', address: '', hours: '', shipFee: 0, freeFrom: 0 }
+export let SHOP: Shop = { phone: '', address: '', hours: '', shipFee: 0, freeFrom: 0, cardNumber: '', cardOwner: '' }
 export let NEW_ARRIVALS: string[] = []
 
 interface CatalogResponse {
@@ -59,6 +62,12 @@ export async function loadCatalog() {
 }
 
 export const byId = (id: string | null) => PRODUCTS.find(p => p.id === id)
+
+/** Pieces left of a colour and size; unlimited when the shop does not track this product's stock. */
+export const leftOf = (p: Product, color: string, size: string) => (p.stock ? p.stock[`${color}|${size}`] ?? 0 : Infinity)
+export const soldOut = (p: Product) => !!p.stock && Object.values(p.stock).every(n => n <= 0)
+/** "8600123412341234" -> "8600 1234 1234 1234" */
+export const cardShown = (n: string) => n.replace(/(\d{4})(?=\d)/g, '$1 ')
 
 /** Landing: collection cards → shop category */
 export const COLLECTIONS: { t: string; s: string; img: string; cat: CatId }[] = [

@@ -51,7 +51,6 @@ export interface State {
   mine: MyOrder[]
   ship: 'delivery' | 'pickup'
   pay: 'cash' | 'card'
-  ctype: string
   addr: string
   last: Order | null
 }
@@ -73,7 +72,7 @@ const PERSIST = ['cart', 'fav', 'contact', 'mine', 'addr'] as const
 function initial(): State {
   const s: State = {
     landing: true, screen: 'home', stack: [], cat: 'all', q: '', viewCat: 'all', sort: 'pop', pid: null,
-    cart: [], fav: [], contact: { name: '', phone: '' }, mine: [], ship: 'delivery', pay: 'cash', ctype: 'Uzcard', addr: '', last: null,
+    cart: [], fav: [], contact: { name: '', phone: '' }, mine: [], ship: 'delivery', pay: 'cash', addr: '', last: null,
   }
   try {
     const d = JSON.parse(localStorage.getItem(KEY) || 'null')
@@ -195,7 +194,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       ship: st.ship,
       address: st.ship === 'delivery' ? st.addr : '',
       pay: st.pay,
-      cardType: st.pay === 'card' ? st.ctype : undefined,
       items: st.cart.map(l => ({ id: l.id, ci: l.ci, size: l.size, qty: l.qty })),
     })
     scrollTo.current = 0

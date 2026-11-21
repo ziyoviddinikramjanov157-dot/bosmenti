@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { byId, SHOP } from '../data/catalog'
+import { byId, cardShown, SHOP } from '../data/catalog'
 import { cartCount, shipFee, STATUS_LABEL, subTotal, useStore, type Order, type State } from '../store'
 import { ApiError, asset, post } from '../lib/api'
 import { fmt, fmtDate, fmtPh } from '../lib/util'
@@ -7,7 +7,7 @@ import { Icon, Pic } from '../components/ui'
 
 /* Cart, profile and order-confirmation screens */
 
-const payLabel = (o: Pick<Order, 'pay' | 'cardType'>) => (o.pay === 'cash' ? 'Naqd pul' : `Karta${o.cardType ? ` (${o.cardType})` : ''}`)
+const payLabel = (o: Pick<Order, 'pay'>) => (o.pay === 'card' ? 'Kartaga o‘tkazma' : 'Naqd pul')
 const shipLabel = (o: Pick<Order, 'ship'>) => (o.ship === 'pickup' ? 'Do‘kondan olish' : 'Yetkazib berish')
 const itemCount = (o: Order) => o.items.reduce((a, i) => a + i.qty, 0)
 /** "+998901234567" -> "+998 90 123 45 67" */
@@ -133,14 +133,9 @@ export function Cart() {
           <h3 className="h3">To‘lov usuli</h3>
           <div className="pays">
             <button className={'pay' + (s.pay === 'cash' ? ' on' : '')} data-v="cash" onClick={() => set({ pay: 'cash' })}><span className="ck"><Icon n="check" /></span><Icon n="cash" /><b>Naqd pul</b><small>Qabul qilganda to‘laysiz</small></button>
-            <button className={'pay' + (s.pay === 'card' ? ' on' : '')} data-v="card" onClick={() => set({ pay: 'card' })}><span className="ck"><Icon n="check" /></span><Icon n="card" /><b>Karta</b><small>Uzcard · Humo · Visa</small></button>
+            <button className={'pay' + (s.pay === 'card' ? ' on' : '')} data-v="card" onClick={() => set({ pay: 'card' })}><span className="ck"><Icon n="check" /></span><Icon n="card" /><b>Karta</b><small>Do‘kon kartasiga o‘tkazasiz</small></button>
           </div>
-          {s.pay === 'card' && (
-            <>
-              <div className="ctypes">{['Uzcard', 'Humo', 'Visa'].map(t => <button key={t} className={s.ctype === t ? 'on' : ''} onClick={() => set({ ctype: t })}>{t}</button>)}</div>
-              <p className="note">Kartadan kiyimni qabul qilganda to‘laysiz: kuryerga yoki do‘konda.</p>
-            </>
-          )}
+          {s.pay === 'card' && <CardBox />}
 
           <div className="sum">
             <div><span>Mahsulotlar ({cartCount(s)})</span><b>{fmt(sub)}</b></div>
@@ -233,9 +228,27 @@ export function Success() {
         <div><span>To‘lov</span><b>{payLabel(o)}</b></div>
         <div className="tot"><span>Jami</span><b>{fmt(o.total)}</b></div>
       </div>
+      {o.pay === 'card' && <CardBox total={o.total} />}
       <p className="note">Operator tez orada {showPhone(o.phone)} raqamiga qo‘ng‘iroq qilib, buyurtmani tasdiqlaydi. Buyurtma holatini “Profil” bo‘limida kuzatasiz.</p>
       <button className="cta wide" onClick={() => tab('home')}>Xaridni davom ettirish</button>
       <button className="ghost" onClick={() => tab('profile')}>Buyurtmalarim</button>
+    </div>
+  )
+}
+
+/** Where to send the money when paying by card. The shop sets the card in the admin panel. */
+function CardBox({ total }: { total?: number }) {
+  const [copied, setCopied] = useState(false)
+  if (!SHOP.cardNumber) return <p className="note">Karta raqamini operator qo‘ng‘iroq qilganda aytadi.</p>
+  const copy = () =>
+    navigator.clipboard?.writeText(SHOP.cardNumber).then(() => setCopied(true), () => {})
+  return (
+    <div className="cardbox">
+      <small>{total ? <>Buyurtma summasini — <b>{fmt(total)}</b> — shu kartaga o‘tkazing:</> : 'Buyurtmadan so‘ng pulni shu kartaga o‘tkazasiz:'}</small>
+      <b className="num">{cardShown(SHOP.cardNumber)}</b>
+      {SHOP.cardOwner && <small>{SHOP.cardOwner}</small>}
+      <button className="lnk" onClick={copy}>{copied ? 'Nusxalandi' : 'Raqamni nusxalash'}</button>
+      <small>Pul tushgach, operator buyurtmani tasdiqlaydi.</small>
     </div>
   )
 }

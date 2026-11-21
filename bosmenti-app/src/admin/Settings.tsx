@@ -44,6 +44,24 @@ export function SettingsPage() {
           <label>Shu summadan boshlab bepul, so‘m<input type="number" min={0} step={10000} value={s.freeFrom} onChange={e => set({ freeFrom: Number(e.target.value) })} /></label>
         </div>
 
+        <h2>To‘lov kartasi</h2>
+        <p className="a-muted">Saytda mijoz “Karta”ni tanlasa, pulni shu kartaga o‘tkazadi. Pul tushganini ko‘rgach, savdoga to‘lovni qo‘shasiz.</p>
+        <div className="a-row">
+          <label>Karta raqami
+            <input inputMode="numeric" autoComplete="off" placeholder="8600 0000 0000 0000" value={s.cardNumber.replace(/(\d{4})(?=\d)/g, '$1 ')}
+              onChange={e => set({ cardNumber: e.target.value.replace(/\D/g, '').slice(0, 16) })} />
+          </label>
+          <label>Karta egasi<input value={s.cardOwner} onChange={e => set({ cardOwner: e.target.value })} maxLength={60} placeholder="Ism Familiya" /></label>
+        </div>
+
+        <h2>Kassa</h2>
+        <label>Chek printeri qog‘ozining eni
+          <select value={s.receiptWidth} onChange={e => set({ receiptWidth: Number(e.target.value) as 58 | 80 })}>
+            <option value={80}>80 mm</option>
+            <option value={58}>58 mm</option>
+          </select>
+        </label>
+
         {error && <p className="a-err">{error}</p>}
         {msg && <p className="a-ok">{msg}</p>}
         <div className="a-actions"><button className="a-btn primary" disabled={!changed}>Saqlash</button></div>

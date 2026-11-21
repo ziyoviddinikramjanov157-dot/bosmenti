@@ -1,5 +1,5 @@
 import { artInner, type ArtType } from '../lib/art'
-import { CATS, CN, PRODUCTS, type CatId, type Product } from '../data/catalog'
+import { CATS, CN, PRODUCTS, soldOut, type CatId, type Product } from '../data/catalog'
 import { fmt } from '../lib/util'
 import { asset } from '../lib/api'
 import { useStore } from '../store'
@@ -58,7 +58,7 @@ export function ProductCard({ p }: { p: Product }) {
   return (
     <article className="pc" onClick={open} onKeyDown={key} role="button" tabIndex={0} aria-label={p.name}>
       <div className="ph" style={{ ['--t' as string]: p.tint }}>
-        {p.tag && <span className={'tag' + (p.old ? ' s' : '')}>{p.tag}</span>}
+        {soldOut(p) ? <span className="tag out">Tugagan</span> : p.tag && <span className={'tag' + (p.old ? ' s' : '')}>{p.tag}</span>}
         <FavButton id={p.id} variant="card" />
         <Pic p={p} />
       </div>
