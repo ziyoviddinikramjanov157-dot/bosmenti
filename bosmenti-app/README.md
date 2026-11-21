@@ -2,11 +2,21 @@
 
 Do‘konning sayti va boshqaruv paneli. React + TypeScript + Vite. Ma’lumotlarni serverdan (`../bosmenti-server`) oladi.
 
+**Sayt (xaridor uchun)**
+
 - Birinchi ochilganda do‘kon haqidagi landing sahifasi chiqadi, ro‘yxatdan o‘tish so‘ralmaydi.
-- Bo‘limlar, mahsulotlar, narxlar va do‘kon ma’lumotlari admin panelda tahrirlanadi.
-- Buyurtma berishda mijoz ismi va telefon raqamini qoldiradi; to‘lov kiyimni qabul qilganda naqd yoki karta bilan.
+- Chegirmali narxlar eski narx chizilgan holda ko‘rsatiladi; omborda tugagan o‘lchamni tanlab bo‘lmaydi.
+- Buyurtma berishda mijoz ismi va telefon raqamini qoldiradi. To‘lov: kiyimni olganda naqd yoki do‘kon kartasiga o‘tkazma.
 - Mijoz buyurtmasi holatini “Profil” bo‘limida ko‘radi.
 - Sayt telefon va kompyuter ekraniga moslashadi.
+
+**Admin panel (`/admin`) — do‘kondagi POS apparatda ham ishlaydi**
+
+- **Kassa:** shtrix-kod skaneri bilan savdo; naqd, karta, aralash, qisman yoki nasiya; qaytim; chek.
+- **Kirim:** yangi tovarni skanerlab omborga qo‘shish; yangi kodni kiyimga bir marta bog‘lash.
+- **Ombor:** rang va o‘lcham bo‘yicha qoldiq, sanoq, shtrix-kodli yorliqlar.
+- **Savdolar:** do‘kon va sayt savdolari bitta ro‘yxatda, to‘lovlar sana-vaqti bilan, qarzdorlar.
+- **Mahsulotlar, Chegirmalar, Hisobot, Sozlamalar.**
 
 Serverga chiqarish va ishga tushirish: [`../bosmenti-server/README.md`](../bosmenti-server/README.md).
 
@@ -21,7 +31,8 @@ src/
   data/catalog.ts       serverdan kelgan katalog (bo‘limlar, mahsulotlar, o‘lchamlar, do‘kon ma’lumotlari)
   lib/api.ts            server bilan aloqa
   components/, screens/ do‘kon ekranlari
-  admin/                boshqaruv paneli: buyurtmalar, mahsulotlar, sozlamalar
+  admin/                boshqaruv paneli: kassa, kirim, ombor, savdolar, mahsulotlar, chegirmalar, hisobot, sozlamalar
+  admin/pos.ts          skaner, chek va shtrix-kodli yorliq chop etish
 public/img/             do‘konning boshlang‘ich fotolari (manbalari: public/img/CREDITS.md)
 ```
 
