@@ -7,6 +7,14 @@ export const Settings = z.object({
   hours: z.string().trim().max(100).default('Har kuni 09:00–21:00'),
   shipFee: z.number().int().min(0).max(10_000_000).default(25000),
   freeFrom: z.number().int().min(0).max(1_000_000_000).default(500000),
+  // the shop's card that customers transfer money to
+  cardNumber: z
+    .string()
+    .transform(s => s.replace(/\s/g, ''))
+    .pipe(z.string().regex(/^(\d{16})?$/, 'Karta raqami 16 ta raqamdan iborat bo‘lsin'))
+    .default(''),
+  cardOwner: z.string().trim().max(60).default(''),
+  receiptWidth: z.union([z.literal(58), z.literal(80)]).default(80),
 })
 export type Settings = z.infer<typeof Settings>
 

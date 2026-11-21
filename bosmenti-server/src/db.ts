@@ -1,5 +1,8 @@
 import pg from 'pg'
 
+// DATE columns stay "2026-12-01" strings instead of becoming midnight in the server's time zone
+pg.types.setTypeParser(1082, v => v)
+
 export type Db = pg.Pool
 export type Client = pg.Pool | pg.PoolClient
 

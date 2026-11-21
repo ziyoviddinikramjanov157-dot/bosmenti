@@ -23,7 +23,7 @@ export async function setup() {
   })
   const db = createPool(TEST_DB)
   await migrate(db)
-  await db.query('TRUNCATE order_items, orders, products, categories, settings, admin_sessions RESTART IDENTITY CASCADE')
+  await db.query('TRUNCATE payments, stock_moves, barcodes, variants, discounts, order_items, orders, products, categories, settings, admin_sessions RESTART IDENTITY CASCADE')
   await db.query("SELECT setval('order_no_seq', 10001, false)")
   await seed(db, { demoProducts: true })
   const sent: Order[] = []

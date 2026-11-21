@@ -121,10 +121,15 @@ describe('admin uploads and settings', () => {
 
   it('saves shop settings and shows them in the catalog', async () => {
     const agent = await loggedIn()
-    const s = { phone: '+998 71 200 00 00', address: 'Toshkent, Chilonzor 5', hours: 'Har kuni 10:00–22:00', shipFee: 20000, freeFrom: 400000 }
+    const s = {
+      phone: '+998 71 200 00 00', address: 'Toshkent, Chilonzor 5', hours: 'Har kuni 10:00–22:00', shipFee: 20000, freeFrom: 400000,
+      cardNumber: '8600 1234 5678 9012', cardOwner: 'Aziz Karimov', receiptWidth: 58,
+    }
     await agent.put('/api/admin/settings').send(s).expect(200)
     const catalog = await request(ctx.app).get('/api/catalog')
-    expect(catalog.body.shop).toEqual(s)
+    expect(catalog.body.shop).toEqual({ ...s, cardNumber: '8600123456789012' })
     await agent.put('/api/admin/settings').send({ ...s, shipFee: -1 }).expect(400)
+    const badCard = await agent.put('/api/admin/settings').send({ ...s, cardNumber: '8600 1234' }).expect(400)
+    expect(badCard.body.error).toBe('Karta raqami 16 ta raqamdan iborat bo‘lsin')
   })
 })

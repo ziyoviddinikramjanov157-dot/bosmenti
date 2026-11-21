@@ -3,22 +3,56 @@ import { z } from 'zod'
 import { ART_TYPES, isAllowedImage, SIZE_KEYS } from '../catalog-rules.js'
 import type { Client } from '../db.js'
 import { HttpError } from '../errors.js'
+import { activeDiscounts, discounted, discountPercent } from './pricing.js'
 
 interface ProductRow {
   id: string; category_id: string; name: string; price: number; old_price: number; images: string[]
   art_type: string; colors: { n: string; c: string }[]; size_key: string; material: string; made_in: string
   tag: string; description: string; accent: string | null; is_new: boolean; is_active: boolean; sort: number
+  track_stock: boolean
 }
 
 const COLUMNS = `id, category_id, name, price, old_price, images, art_type, colors, size_key, material, made_in,
-  tag, description, accent, is_new, is_active, sort`
+  tag, description, accent, is_new, is_active, sort, track_stock`
 
 /** The shape the shop frontend has always used for a product. */
 const toApi = (r: ProductRow) => ({
   id: r.id, cat: r.category_id, name: r.name, price: r.price, old: r.old_price, imgs: r.images, type: r.art_type,
   colors: r.colors, sz: r.size_key, mat: r.material, made: r.made_in, tag: r.tag, desc: r.description,
-  acc: r.accent, isNew: r.is_new, active: r.is_active, sort: r.sort,
+  acc: r.accent, isNew: r.is_new, active: r.is_active, sort: r.sort, track: r.track_stock,
 })
+export type ApiProduct = ReturnType<typeof toApi>
+
+/**
+ * What shoppers see: the discounted price with the original crossed out, and — for products whose stock
+ * the shop tracks — how many of each colour/size are left ("Qora|M": 3).
+ */
+export async function catalogProducts(db: Client) {
+  const [products, discounts, stock] = await Promise.all([
+    listProducts(db),
+    activeDiscounts(db),
+    db.query<{ product_id: string; color: string; size: string; stock: number }>(
+      'SELECT v.product_id, v.color, v.size, v.stock FROM variants v JOIN products p ON p.id = v.product_id WHERE p.track_stock',
+    ),
+  ])
+  return products.map(p => {
+    const pct = discountPercent(p, discounts)
+    const left = stock.rows.filter(s => s.product_id === p.id)
+    return {
+      ...p,
+      price: discounted(p.price, pct),
+      old: pct ? p.price : p.old,
+      tag: pct ? `-${pct}%` : p.tag,
+      discount: pct,
+      stock: p.track ? Object.fromEntries(left.map(s => [`${s.color}|${s.size}`, s.stock])) : undefined,
+    }
+  })
+}
+
+export async function setTracking(db: Client, id: string, on: boolean) {
+  const { rowCount } = await db.query('UPDATE products SET track_stock = $2 WHERE id = $1', [id, on])
+  if (!rowCount) throw new HttpError(404, 'Mahsulot topilmadi')
+}
 
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/, 'Rang #RRGGBB ko‘rinishida bo‘lsin')
 

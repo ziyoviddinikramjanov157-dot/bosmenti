@@ -1,9 +1,9 @@
 import type { Config } from '../config.js'
+import { money } from '../format.js'
 import type { Order } from './orders.js'
 
 export type Notifier = (order: Order) => Promise<void>
 
-const money = (n: number) => `${String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} so‘m`
 
 export function orderMessage(o: Order, publicUrl?: string) {
   const lines = [
@@ -12,11 +12,12 @@ export function orderMessage(o: Order, publicUrl?: string) {
     `Mijoz: ${o.name}`,
     `Telefon: ${o.phone}`,
     o.ship === 'pickup' ? 'Qabul qilish: do‘kondan olib ketadi' : `Yetkazib berish: ${o.address}`,
-    `To‘lov: ${o.pay === 'cash' ? 'naqd' : `karta${o.cardType ? ` (${o.cardType})` : ''}`}, qabul qilganda`,
+    `To‘lov: ${o.pay === 'card' ? 'do‘kon kartasiga o‘tkazma' : 'naqd, qabul qilganda'}`,
     '',
     ...o.items.map(i => `• ${i.name} — ${i.color}, ${i.size} × ${i.qty} = ${money(i.price * i.qty)}`),
     '',
     `Mahsulotlar: ${money(o.itemsTotal)}`,
+    ...(o.discountTotal ? [`Chegirma: ${money(o.discountTotal)}`] : []),
     `Yetkazib berish: ${o.shipFee ? money(o.shipFee) : 'bepul'}`,
     `Jami: ${money(o.total)}`,
   ]

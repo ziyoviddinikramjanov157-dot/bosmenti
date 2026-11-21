@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { GUIDE, SIZES } from '../catalog-rules.js'
 import type { Db } from '../db.js'
 import { createOrder, findByTokens, OrderInput, toCustomerView } from '../services/orders.js'
-import { listProducts } from '../services/products.js'
+import { catalogProducts } from '../services/products.js'
 import { getSettings } from '../services/settings.js'
 import type { Notifier } from '../services/telegram.js'
 
@@ -29,7 +29,7 @@ export function publicRouter({ db, notify, rateLimits }: { db: Db; notify: Notif
   r.get('/catalog', async (_req, res) => {
     const [categories, products, shop] = await Promise.all([
       db.query('SELECT id, name, art_type AS type, color AS c FROM categories ORDER BY sort'),
-      listProducts(db),
+      catalogProducts(db),
       getSettings(db),
     ])
     res.set('Cache-Control', 'no-cache')
