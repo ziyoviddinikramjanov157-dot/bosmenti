@@ -20,8 +20,8 @@ curl -fsSL https://get.docker.com | sh
 Keyin serverda:
 
 ```bash
-git clone https://github.com/ziyoviddinikramjanov157-dot/portfolio-repo.git
-cd portfolio-repo/bosmenti-server
+git clone https://github.com/ziyoviddinikramjanov157-dot/bosmenti.git
+cd bosmenti/bosmenti-server
 cp .env.example .env
 nano .env
 ```
